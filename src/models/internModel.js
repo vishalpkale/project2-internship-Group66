@@ -4,25 +4,25 @@ const id = mongoose.Schema.Types.ObjectId
 const internSchema = new mongoose.Schema({
     name:{
         type:String,
-        required:[true "intern name is required."]
+        required:true 
     },
     email:{
         type:String,
-        required:[true "email is required."],
-        unique:[true "email is already taken."],
+        required:true,
+        unique:true, 
         trim:true
     },
     mobile:{
         type:String,
-        required:[true "mobile number is required."],
-        unique:[true "mobile number is already taken."],
+        required:true,
+        unique:true,
         trim:true
     },
     collegeId:{
         type:id,
         trim:true,
-        ref:"college",
-        required:[true "collegeId is required."],
+        ref:'College',
+        required:true ,
     },
     isDeleted:{
         type:Boolean,
@@ -31,4 +31,4 @@ const internSchema = new mongoose.Schema({
    
 }, { timestamps: true })
 
-module.exports = mongoose.model('intern', internSchema)
+module.exports = mongoose.model('Intern', internSchema)
