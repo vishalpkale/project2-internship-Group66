@@ -1,4 +1,4 @@
-const collageModel = require("../models/collegeModel")
+const collegeModel = require("../models/collegeModel")
 const internModel=require("../models/internModel")
 
 //------------------Common Validation Function-----------------/
@@ -18,34 +18,36 @@ const isValidURL = function (str) {
     if (pattern.test(str)) return true;
 };
 
+
+const isValidString=new RegExp(/^[a-z]+\s[a-z ]+$/i)
 //------------------Create College----------------------//
 
 const createCollage = async function (req, res) {
     try {
         requestBody = req.body
         if (!isValidRequestBody(requestBody)) {
-            return res.status(400).send({ status: false, message: "Please Provide Collage Data" })
+            return res.status(400).send({ status: false, message: "Please Provide College Data" })
         }
         const { name, fullName, logoLink } = requestBody
 
         if (!isValid(name)) {
-            return res.status(400).send({ status: false, message: "name is required" })
+            return res.status(400).send({ status: false, message: "name is required and have non empty string value" })
         }
-        if (!isValid(fullName)) {
-            return res.status(400).send({ status: false, message: "fullName is required" })
+        if (!isValidString.test(fullName)) {
+            return res.status(400).send({ status: false, message: "fullName is required and have non empty string value" })
         }
         if (!isValid(logoLink)) {
             return res.status(400).send({ status: false, message: "logoLink is required" })
         }
         if (!isValidURL(logoLink)) {
-            return res.status(400).send({ status: false, message: "logoLink is required" })
+            return res.status(400).send({ status: false, message: "Enter valid logoLink" })
         }
-        const isNamePresent = await collageModel.findOne({ name: name, isDeleted: false })
+        const isNamePresent = await collegeModel.findOne({ name: name, isDeleted: false })
         if (isNamePresent) {
             return res.status(400).send({ status: false, message: "Name is already exist" })
         }
-        const newCollege = await collageModel.create(requestBody)
-        res.status(201).send({ status: true, message: "New Collage Entry Created", data: newCollege })
+        const newCollege = await collegeModel.create(requestBody)
+        res.status(201).send({ status: true, message: "New College Entry Created", data: newCollege })
 
     } catch (error) {
         res.status(500).send({ error: error.message })
@@ -58,15 +60,15 @@ const createCollage = async function (req, res) {
 
 const getCollege=async function(req,res){
     try{
-    let cName=req.query.name
+    let cName=req.query.collegeName
     if(!cName){
-        return res.status(400).send({status:false,msg:"Enter college Name in abbrivated form"})
+        return res.status(400).send({status:false,message:"Enter college Name in abbreviated form"})
     }
-    const collegeData=await collegeModel.findone({name:cName})
+    const collegeData=await collegeModel.findOne({name:cName})
     if(collegeData==null){
-        return res.status(404).send({status:false,msg:"No college found with this name"})
+        return res.status(404).send({status:false,message:"No college found with this name"})
     }
-    const interns=await internModel.findById(collegeData._id).select({_id:1,name:1,email:1,mobile:1})
+    const interns=await internModel.find({collegeId:collegeData['_id']}).select({_id:1,name:1,email:1,mobile:1})
     const requiredData={
         "name": collegeData.name,
     "fullName": collegeData.fullName,
