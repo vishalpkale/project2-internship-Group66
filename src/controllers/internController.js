@@ -5,13 +5,6 @@ const collegeModel = require("../models/collegeModel")
 
 //------------------Common Validation Function-----------------/
 
-const isValid = function (value) {
-    if (typeof (value) != "undefined" || value === null) return false
-    if (typeof (value) === "string" && value.trim().length == 0) return false
-    return true
-}
-
-
 const isValidRequestBody = function (str) {
     return Object.keys(str).length == 0
 }
@@ -27,20 +20,20 @@ const intern = async function (req, res) {
 
         //checking Body is Blank or not
         if (isValidRequestBody(requestBody)) {
-            return res.status(404).send({ status: false, message: "plz enter Intern data" });
+            return res.status(400).send({ status: false, message: "plz enter Intern data" });
         }
         //Destructuring
         let { name, email, mobile, collegeName } = req.body;
 
         //Validation for Students Name   
-        if (!isValid(name)) {
-            return res.status(404).send({ status: false, message: "Name missing" });
+        if (!name) {
+            return res.status(400).send({ status: false, message: "Name missing" });
         }
         if (!isValidfName.test(name)) {
-            return res.status(400).send({ status: false, message: "Please Enter a valid Intern Name(Full" });
+            return res.status(400).send({ status: false, message: "Please Enter a valid Intern Name(Fullname)" });
         }
         //Validation for Students Email id
-        if (!isValid(email)) {
+        if (!email) {
             return res.status(404).send({ status: false, message: "email ID is required" });
         }
         if (!isValidEmail.test(email)) {
@@ -49,12 +42,12 @@ const intern = async function (req, res) {
         let validEmail = await internModel.findOne({ email: email });
 
         if (validEmail) {
-            return res.status(400).send({ status: false, message: "person already applied for intership" });
+            return res.status(400).send({ status: false, message: "Email already exist use another email" });
         }
 
 
         //Validation for Students mobile
-        if (!isValid(mobile)) {
+        if (!mobile) {
             return res.status(404).send({ status: false, message: "mobile is required" });
         }
         if (!isValidMobile.test(mobile)){
@@ -62,12 +55,12 @@ const intern = async function (req, res) {
         }
         let validMobile = await internModel.findOne({ mobile: mobile });
         if (validMobile) {
-            return res.status(400).send({ status: false, message: "person already applied for intership" });
+            return res.status(400).send({ status: false, message: "mobile already exist use another mobile" });
         }
 
         //Validation for Students Selected College Name 
         
-        if (!isValid(collegeName)) {
+        if (!collegeName) {
             return res.status(400).send({ status: false, message: "collegeName is required" });
         }
         const doc = await collegeModel.findOne({ name: collegeName });
@@ -76,7 +69,7 @@ const intern = async function (req, res) {
         }
         let collegeId = doc._id;
         const result = await internModel.create({ name, email, mobile, collegeId });
-        res.status(201).send({ status: true, data: result });
+       return res.status(201).send({ status: true, data: result });
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message });
