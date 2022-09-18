@@ -15,13 +15,13 @@ const isValidURL = function (str) {
 };
 
 
-const isValidString=new RegExp(/^[a-z]+\s[a-z ]+$/i)
+const isValidString=new RegExp(/^[A-Za-z][A-Za-z\'\-]+([\ A-Za-z][A-Za-z\'\-]+)*/)
 
 //------------------Create College----------------------//
 
 const createCollage = async function (req, res) {
     try {
-        requestBody = req.body
+       const  requestBody = req.body
         if (!isValidRequestBody(requestBody)) {
             return res.status(400).send({ status: false, message: "Please Provide College Data" })
         }
@@ -46,7 +46,7 @@ const createCollage = async function (req, res) {
         }
         const isNamePresent = await collegeModel.findOne({ name: name, isDeleted: false })
         if (isNamePresent) {
-            return res.status(400).send({ status: false, message: "Name is already exist" })
+            return res.status(409).send({ status: false, message: "Name is already exist" })
         }
         const newCollege = await collegeModel.create(requestBody)
         return res.status(201).send({ status: true, message: "New College Entry Created", data: newCollege })

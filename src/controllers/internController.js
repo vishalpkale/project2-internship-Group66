@@ -15,7 +15,7 @@ const isValidMobile = new RegExp(/^[6-9]\d{9}$/)
 //---------------------------------------Create Intern-------------------------------------------------------------------/
 const intern = async function (req, res) {
     try {
-        requestBody = req.body
+       const  requestBody = req.body
 
 
         //checking Body is Blank or not
@@ -28,8 +28,8 @@ const intern = async function (req, res) {
         //Validation for Students Name   
         if (!name) {
             return res.status(400).send({ status: false, message: "Name missing" });
-        }
-        if (!isValidfName.test(name)) {
+        } 
+        if (!isValidfName.test(name)) {  
             return res.status(400).send({ status: false, message: "Please Enter a valid Intern Name(Fullname)" });
         }
         //Validation for Students Email id
@@ -42,7 +42,7 @@ const intern = async function (req, res) {
         let validEmail = await internModel.findOne({ email: email });
 
         if (validEmail) {
-            return res.status(400).send({ status: false, message: "Email already exist use another email" });
+            return res.status(409).send({ status: false, message: "Email already exist use another email" });
         }
 
 

@@ -9,7 +9,7 @@ const internSchema = new mongoose.Schema({
     email:{
         type:String,
         required:true,
-        unique:true, 
+        unique:true, ///409
         trim:true
     },
     mobile:{
@@ -31,4 +31,5 @@ const internSchema = new mongoose.Schema({
    
 }, { timestamps: true })
 
-module.exports = mongoose.model('Intern', internSchema)
+module.exports= mongoose.model('Intern', internSchema)
+
